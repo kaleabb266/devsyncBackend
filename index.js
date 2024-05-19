@@ -4,6 +4,7 @@ const { default: axios } = require("axios");
 
 const mongoose = require('mongoose')
 const users = require('./routes/users')
+const quiz = require('./routes/quiz')
 const home = require('./routes/home')
 const posts = require('./routes/knowledgeBase')
 
@@ -16,6 +17,7 @@ app.use(express.json())
 
 app.use('/api/users', users)
 app.use('/api/posts', posts)
+app.use('/api/quiz', quiz)
 app.use('/', home)
 
 mongoose.connect('mongodb://127.0.0.1/devsync')
