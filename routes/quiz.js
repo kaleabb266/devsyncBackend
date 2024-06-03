@@ -8,26 +8,14 @@ const router = express.Router()
 const quizSchema = new mongoose.Schema({
     language: String,
     category: String,
-    question: [],
-    choices: [[]],
-    correctAnswerIndex: [],
+    question: String,
+    choices: [],
+    correctAnswerIndex: Number,
     
     })
 
-    // const questionsD = [
-    //     {
-    //       language: "JavaScript",
-    //       category: "Basics",
-    //       question: [
-    //         "What data type is used to store a single character in JavaScript?",
-    //         "What method is used to select elements by ID in JavaScript?",
-    //       ],
-    //       choices: [
-    //         ["int", "float", "string", "char"],
-    //         ["getElementById()", "querySelector()", "getElementByClassName()", "getElementByTagName()"],
-    //       ],
-    //       correctAnswerIndex: [2, 0],
-    //     }
+
+    
 
 
 const Quiz = mongoose.model('Quiz', quizSchema)
@@ -38,6 +26,7 @@ const Quiz = mongoose.model('Quiz', quizSchema)
 router.get('/', async (req, res) => {
     const quizs = await Quiz.find()
     res.send(quizs)
+    console.log(quizs.language)
 
 })
 
@@ -57,7 +46,23 @@ router.post('/', async (req, res) => {
     res.send(quiz)
 })
 
-
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params; 
+    console.log(id)
+  
+    try {
+      const deletedQuestion = await Quiz.findByIdAndDelete(id);
+  
+      if (!deletedQuestion) {
+        return res.status(404).send({ message: 'Question not found' });
+      }
+  
+      res.send({ message: 'Question deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Error deleting question' });
+    }
+  });
 
 
 module.exports = router;
