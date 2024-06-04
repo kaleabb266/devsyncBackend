@@ -36,11 +36,14 @@ app.post("/api/login", async (req, res) => {
         console.log("HJDKSSSSSSSSSAFDKFJAHDLSFJDSKFJHDSKFHKSDFJDFSFDSFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ")
 
         // If successful, respond with user data
-        // return response.data
+        // return respo nse.data
+        if (response.data.username !== username || response.data.secret !== bcrypt.hash(password, salt)){
+            return -1
+
+        }
+
         if (response.status === 200) {
-            const user = {username:response.data.username,
-                          secret: response.data.secret
-            };
+            const user = response.data;
             console.log(user)
             // Add any additional logic here, such as generating a session token, storing user data in a database, etc.
             return res.status(200).json({ user });
