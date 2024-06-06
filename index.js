@@ -1,69 +1,61 @@
 const express = require("express");
-const mongoose = require('mongoose');
 const cors = require("cors");
-const axios = require("axios");
-const bcrypt = require('bcrypt'); // Added for password hashing
+const { default: axios } = require("axios");
+
+const mongoose = require('mongoose')
+// const users = require('./routes/users')
+const quiz = require('./routes/quiz')
+const home = require('./routes/home')
+const posts = require('./routes/knowledgeBase')
+const Login = require('./routes/login')
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: true })); // Adjust origin for production
+app.use(cors({ origin: true }));
 
-const projectId = 'b7fa4655-c0a7-4b26-8d55-0e2a6f3af468';
-const projectSecret = '890b3659-56bb-4bc6-bfb1-865c706fc1b3';
+app.use(express.json())
 
-// Models (assuming you have a User model defined)
-const User = require('./models/User'); // Replace with your user model path
 
-// Login route
-app.post("/api/login", async (req, res) => {
-    const { username, password } = req.body;
-    console.log(username)
+// app.use('/api/users', users)
+app.use('/api/posts', posts)
+app.use('/api/quiz', quiz)
+app.use('/api/login', Login)
+
+app.use('/', home)
+
+mongoose.connect('mongodb://127.0.0.1/devsync')
+    .then(() => console.log('connected to mongod'))
+    .catch(err => console.error('connection to db failed', err))
+
+
+
+// createUser()
+// getUser()
+
+
+
+
+
+
+
+app.post("/authenticate", async (req, res) => {
+    const { username } = req.body;
 
     try {
-        console.log("user search")
-        // Fetch user information from Chat Engine
-        const response = await axios.get("https://api.chatengine.io/users/me",
-            {
-                headers: {
-                    "Private-Key": projectSecret,
-                    "Content-Type": "application/json"
-                },
-                params: { username, secret: password }
-            }
-        );
-        console.log("HJDKSSSSSSSSSAFDKFJAHDLSFJDSKFJHDSKFHKSDFJDFSFDSFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ")
-        console.log(response.data)
-        console.log("HJDKSSSSSSSSSAFDKFJAHDLSFJDSKFJHDSKFHKSDFJDFSFDSFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ")
+        const r = await axios.put(
+            'https://api.chatengine.io/users',
+            { username: username, secret: username, first_name: username },
+            { headers: { "private-key": "b6ef7e92-9d36-4c62-a6cb-d82f678769a4" } }
+        )
 
-        // If successful, respond with user data
-        // return respo nse.data
-        if (response.data.username !== username || response.data.secret !== bcrypt.hash(password, salt)){
-            return -1
+        return res.status(r.status).json(r.data)
+    } catch (e) {
 
-        }
-
-        if (response.status === 200) {
-            const user = response.data;
-            console.log(user)
-            // Add any additional logic here, such as generating a session token, storing user data in a database, etc.
-            return res.status(200).json({ user });
-        } else {
-            // Handle errors from Chat Engine API
-            return res.status(response.status).json({ error: response.data.error });
-        }
-    } catch (error) {
-        // Handle other errors
-        console.error('Login error:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(e.response.status).json(e.response.data)
     }
+
 });
 
-// Connect to MongoDB
-// mongoose.connect('mongodb://127.0.0.1:27017/devsync', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// })
-//     .then(() => console.log('Connected to MongoDB'))
-//     .catch(err => console.error('Connection to DB failed', err));
 
-app.listen(3001, () => console.log("Listening on port 3001"));
+
+app.listen(3001, () => console.log("listening on port 3001"));
