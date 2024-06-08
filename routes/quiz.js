@@ -46,12 +46,13 @@ router.post('/', async (req, res) => {
     res.send(quiz)
 })
 
-router.delete('/:id', async (req, res) => {
-    const { id } = req.params; 
-    console.log(id)
+router.delete('/:questionId', async (req, res) => {
+  const questionId = req.params.questionId; 
+    console.log("questionId",questionId)
   
     try {
-      const deletedQuestion = await Quiz.findByIdAndDelete(id);
+      const deletedQuestion = await Quiz.findByIdAndDelete(questionId);
+      console.log(deletedQuestion)
   
       if (!deletedQuestion) {
         return res.status(404).send({ message: 'Question not found' });

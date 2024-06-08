@@ -1,57 +1,69 @@
 const express = require('express');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+
+const { Date } = mongoose.Schema.Types;
 
 const router = express.Router()
 
-// const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true }, // Customize fields as needed
-  password: { type: String, required: true }, // Implement secure password hashing
-  email: { type: String, required: true, unique: true },
-  // Add other relevant fields for user data
-});
-const User = mongoose.model('User', userSchema); // Create the model
 
 
-const reporteduserSchema = new mongoose.Schema({
-    username: String,
-    reortedby: String,
+const reportedUserSchema = new mongoose.Schema({
+    reporeduser: String,
+    reportedby: String,
     description: String,
-    chat: [],
-    date: { type: Date, default: Date.now }
+    group: String,
+    date: {
+        type: Date,
+        default: Date.now
+      }
+    
+    })
 
-})
+
+    
 
 
-const reportedUser = mongoose.model('reportedUser', reporteduserSchema)
+const reportedUser = mongoose.model('reportedUser', reportedUserSchema)
 
 
 
 
 router.get('/', async (req, res) => {
-    const reportedUsers = await reportedUser.find().sort('date')
+    const reportedUsers = await reportedUser.find()
     res.send(reportedUsers)
+    console.log(reportedUsers.reporeduser)
 
 })
 
 
 
 router.post('/', async (req, res) => {
-    let reportedUsers = new reportedUser({
-        "username": req.body.username,
-        "reortedby": req.body.reortedby,
+    let reporteduser = new reportedUser({
+        "reporeduser": req.body.reporeduser,
+        "reportedby": req.body.reportedby,
         "description": req.body.description,
-        "chat": req.body.chat,
-        
+        "group": req.body.group,
 
     })
 
-    reportedUsers = await reportedUsers.save()
-    res.send(reportedUsers)
+    reporteduser = await reporteduser.save()
+    res.send(reporteduser)
 })
 
-
+router.delete('/:Id', async (req, res) => {
+    const Id = req.params.Id; 
+      console.log("Id",Id)
+    
+      try {
+        const removedReport = await reportedUser.findByIdAndDelete(Id);
+        console.log(removedReport)
+        res.send({ message: 'Question deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'Error deleting question' });
+      }
+    });
 
 
 module.exports = router;
+

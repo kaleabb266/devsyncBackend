@@ -8,6 +8,9 @@ const quiz = require('./routes/quiz')
 const home = require('./routes/home')
 const posts = require('./routes/knowledgeBase')
 const Login = require('./routes/login')
+const group = require('./routes/group')
+const report = require('./routes/reporteduser')
+const admin = require('./routes/admin')
 
 const app = express();
 app.use(express.json());
@@ -20,6 +23,10 @@ app.use(express.json())
 app.use('/api/posts', posts)
 app.use('/api/quiz', quiz)
 app.use('/api/login', Login)
+app.use('/api/group', group)
+app.use('/api/report', report)
+app.use('/api/admin', admin)
+// app.use('/api/login', Login)
 
 app.use('/', home)
 
