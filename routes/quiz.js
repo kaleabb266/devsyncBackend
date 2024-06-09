@@ -7,15 +7,12 @@ const router = express.Router()
 
 const quizSchema = new mongoose.Schema({
     language: String,
-    category: String,
     question: String,
     choices: [],
     correctAnswerIndex: Number,
     
     })
 
-
-    
 
 
 const Quiz = mongoose.model('Quiz', quizSchema)
@@ -35,7 +32,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     let quiz = new Quiz({
         "language": req.body.language,
-        "category": req.body.category,
         "question": req.body.question,
         "choices": req.body.choices,
         "correctAnswerIndex": req.body.correctAnswerIndex
@@ -53,11 +49,6 @@ router.delete('/:questionId', async (req, res) => {
     try {
       const deletedQuestion = await Quiz.findByIdAndDelete(questionId);
       console.log(deletedQuestion)
-  
-      if (!deletedQuestion) {
-        return res.status(404).send({ message: 'Question not found' });
-      }
-  
       res.send({ message: 'Question deleted successfully' });
     } catch (error) {
       console.error(error);

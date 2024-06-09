@@ -11,6 +11,9 @@ const Login = require('./routes/login')
 const group = require('./routes/group')
 const report = require('./routes/reporteduser')
 const admin = require('./routes/admin')
+const profile = require('./routes/profile')
+// const rating = require('./routes/rating')
+
 
 const app = express();
 app.use(express.json());
@@ -26,7 +29,8 @@ app.use('/api/login', Login)
 app.use('/api/group', group)
 app.use('/api/report', report)
 app.use('/api/admin', admin)
-// app.use('/api/login', Login)
+app.use('/api/profile', profile)
+// app.use('.api/rating',rating)
 
 app.use('/', home)
 
@@ -40,11 +44,6 @@ mongoose.connect('mongodb://127.0.0.1/devsync')
 // getUser()
 
 
-
-
-
-
-
 app.post("/authenticate", async (req, res) => {
     const { username } = req.body;
 
@@ -52,7 +51,7 @@ app.post("/authenticate", async (req, res) => {
         const r = await axios.put(
             'https://api.chatengine.io/users',
             { username: username, secret: username, first_name: username },
-            { headers: { "private-key": "b6ef7e92-9d36-4c62-a6cb-d82f678769a4" } }
+            { headers: { "private-key": "8bf476cd-6524-45a7-9ece-bc47a5a0c812" } }
         )
 
         return res.status(r.status).json(r.data)

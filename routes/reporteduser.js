@@ -19,14 +19,7 @@ const reportedUserSchema = new mongoose.Schema({
     
     })
 
-
-    
-
-
 const reportedUser = mongoose.model('reportedUser', reportedUserSchema)
-
-
-
 
 router.get('/', async (req, res) => {
     const reportedUsers = await reportedUser.find()
@@ -34,8 +27,6 @@ router.get('/', async (req, res) => {
     console.log(reportedUsers.reporeduser)
 
 })
-
-
 
 router.post('/', async (req, res) => {
     let reporteduser = new reportedUser({
